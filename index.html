@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Tabela Mágica</title>
+
+<style>
+
+body{
+background:#0b0b0b;
+color:white;
+font-family:Arial;
+text-align:center;
+}
+
+.topo{
+display:flex;
+justify-content:center;
+margin-top:20px;
+}
+
+.painel{
+width:520px;
+border:1px solid #333;
+border-radius:12px;
+padding:15px;
+background:#111;
+}
+
+.provavel-grid{
+display:flex;
+justify-content:center;
+gap:12px;
+flex-wrap:wrap;
+margin-top:8px;
+}
+
+.numero-box{
+display:flex;
+flex-direction:column;
+align-items:center;
+}
+
+.percent{
+margin-top:4px;
+font-size:11px;
+background:#1b1b1b;
+padding:2px 6px;
+border-radius:6px;
+border:1px solid #333;
+}
+
+.contador{
+margin-top:6px;
+font-size:12px;
+color:#aaa;
+}
+
+.regioes{
+margin-top:15px;
+border-top:1px solid #333;
+padding-top:10px;
+}
+
+.forca-horizontal{
+display:flex;
+justify-content:space-between;
+margin-top:10px;
+}
+
+.forca-horizontal div{
+flex:1;
+text-align:center;
+}
+
+.forca-horizontal span{
+display:block;
+font-size:12px;
+color:#aaa;
+}
+
+.forca-horizontal b{
+font-size:16px;
+}
+
+input{
+padding:10px;
+font-size:18px;
+width:120px;
+text-align:center;
+border-radius:8px;
+border:none;
+margin:20px;
+}
+
+button{
+padding:10px 14px;
+font-size:16px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+background:#c0392b;
+color:white;
+font-weight:bold;
+}
+
+table{
+margin:auto;
+border-collapse:collapse;
+width:95%;
+}
+
+th{
+background:#111;
+padding:10px;
+border-bottom:2px solid #444;
+}
+
+td{
+padding:8px;
+border-bottom:1px solid #222;
+}
+
+.chip{
+width:40px;
+height:40px;
+display:inline-flex;
+align-items:center;
+justify-content:center;
+border-radius:10px;
+font-weight:bold;
+}
+
+.smallchip{
+width:32px;
+height:32px;
+display:inline-flex;
+align-items:center;
+justify-content:center;
+border-radius:8px;
+font-size:14px;
+margin:2px;
+}
+
+.red{background:#c0392b;}
+.black{background:#111;border:1px solid #555;}
+.green{background:#0a8f3c;}
+
+
+/* LOGIN */
+#loginScreen{
+position:fixed;top:0;left:0;width:100%;height:100%;
+background:#000;display:flex;align-items:center;justify-content:center;z-index:9999;
+}
+.loginBox{background:#111;padding:30px;border-radius:12px;border:1px solid #333;width:260px;text-align:center}
+.loginBox input{width:100%;padding:10px;margin:6px 0;border-radius:8px;border:none;text-align:center;box-sizing:border-box}
+.loginBox button{width:100%;padding:10px;background:#c0392b;border:none;border-radius:8px;color:white;font-weight:bold;cursor:pointer;box-sizing:border-box}
+
+/* TIMER */
+#timerBar{
+background:#111;border-bottom:1px solid #333;padding:8px;font-weight:bold;color:#00ff9c
+}
+
+/* ADMIN PANEL */
+#adminPanel{
+position:fixed;
+top:0;
+right:-320px;
+width:320px;
+height:100%;
+background:#0b1a2e;
+border-left:3px solid #c0392b;
+transition:0.4s;
+z-index:9998;
+display:none;
+}
+
+#adminPanel.open{right:0;}
+
+#adminToggle{
+position:absolute;
+left:-130px;
+top:40px;
+background:#c0392b;
+padding:10px;
+border-radius:8px 0 0 8px;
+cursor:pointer;
+font-weight:bold;
+color:white;
+}
+
+#adminContent{
+padding:20px;
+color:white;
+box-sizing:border-box;
+}
+
+.adminBox{
+background:#102544;
+border:1px solid #c0392b;
+padding:15px;
+border-radius:10px;
+margin-bottom:15px;
+box-sizing:border-box;
+}
+
+/* FIX INPUT OVERFLOW */
+.adminBox input{
+width:100%;
+max-width:100%;
+padding:10px;
+margin-bottom:10px;
+border-radius:6px;
+border:none;
+box-sizing:border-box;
+}
+
+.adminBox button{
+width:100%;
+max-width:100%;
+padding:10px;
+margin-top:6px;
+border:none;
+border-radius:6px;
+background:#c0392b;
+color:white;
+cursor:pointer;
+box-sizing:border-box;
+}
+
+#adminContent ul{
+list-style:none;
+padding:0;
+max-height:180px;
+overflow:auto;
+}
+
+/* VIP BLOCK */
+#vipBlock{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#000;
+display:none;
+align-items:center;
+justify-content:center;
+z-index:100000;
+}
+
+.vipBox{
+background:#111;
+padding:40px;
+border-radius:12px;
+text-align:center;
+border:1px solid #333;
+}
+
+.vipBox h1{color:#00ff9c}
+
+#whatsappLink{
+display:block;
+margin-top:20px;
+font-size:24px;
+color:#25D366;
+text-decoration:none;
+font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="loginScreen">
+<div class="loginBox">
+<h3>Acesso</h3>
+<input id="user" placeholder="Usuário">
+<input id="pass" type="password" placeholder="Senha">
+<button onclick="login()">Entrar</button>
+<p id="erro" style="color:red;font-size:12px"></p>
+</div>
+</div>
+
+<div id="siteConteudo" style="display:none">
+
+<div id="timerBar">Tempo restante: <span id="timer">00:00:00</span></div>
+
+<div id="adminPanel">
+<div id="adminToggle" onclick="toggleAdmin()">☰ ADMIN</div>
+
+<div id="adminContent">
+
+<h3>Painel Admin</h3>
+
+<div class="adminBox">
+<h4>Usuários Temporários</h4>
+
+<input id="novoUsuario" placeholder="Usuário">
+<input id="tempoMin" type="number" placeholder="Tempo em minutos">
+<input id="tempoDias" type="number" placeholder="Tempo em dias">
+
+<button onclick="liberarUsuario()">Liberar usuário</button>
+
+<ul id="listaUsuarios"></ul>
+
+</div>
+
+<div class="adminBox">
+<h4>Usuários Vitalícios</h4>
+
+<input id="usuarioVip" placeholder="Usuário VIP">
+
+<button onclick="liberarVip()">Adicionar VIP</button>
+
+<ul id="listaVip"></ul>
+
+</div>
+
+</div>
+</div>
+
+
+<div class="topo">
+
+<div class="painel">
+
+<h3>Números Prováveis</h3>
+
+<div id="proximos" class="provavel-grid"></div>
+
+<div class="contador">
+Recalcula em: <span id="contador">2</span>
+</div>
+
+<div class="regioes">
+
+<h3>Regiões Predominantes</h3>
+
+<div class="forca-horizontal">
+
+<div>
+<span>Terminal</span>
+<b id="terminal"></b>
+</div>
+
+<div>
+<span>Dúzia</span>
+<b id="duzia"></b>
+</div>
+
+<div>
+<span>Coluna</span>
+<b id="coluna"></b>
+</div>
+
+<div>
+<span>Zona</span>
+<b id="zona"></b>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<input id="numero" type="number" min="0" max="36" placeholder="0-36">
+<button onclick="removerUltimo()">X</button>
+
+<table>
+
+<thead>
+<tr>
+<th>Número</th>
+<th>Vizinhos</th>
+<th>Dúzia</th>
+<th>Coluna</th>
+<th>Par/Ímpar</th>
+<th>Zonas</th>
+<th>Número Oculto</th>
+</tr>
+</thead>
+
+<tbody id="tabela"></tbody>
+
+</table>
+
+<script>
+
+const wheel=[0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26]
+
+const red=[1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]
+
+const vizinhosZero=[22,18,29,7,28,12,35,3,26,0,32,15,19,4,21,2,25]
+const tier=[27,13,36,11,30,8,23,10,5,24,16,33]
+const orpholins=[17,34,6,1,20,14,31,9]
+
+let history=[]
+let numerosFixos=[]
+let pesosFixos=[]
+let contadorRodadas=0
+
+function chip(n){
+
+let color="black"
+
+if(n==0)color="green"
+else if(red.includes(n))color="red"
+
+return `<div class="chip ${color}">${n}</div>`
+
+}
+
+function small(n){
+
+let color="black"
+
+if(n==0)color="green"
+else if(red.includes(n))color="red"
+
+return `<div class="smallchip ${color}">${n}</div>`
+
+}
+
+function duzia(n){
+if(n==0)return "-"
+if(n<=12)return "1ª"
+if(n<=24)return "2ª"
+return "3ª"
+}
+
+function coluna(n){
+if(n==0)return "-"
+let m=n%3
+if(m==1)return "C1"
+if(m==2)return "C2"
+return "C3"
+}
+
+function zona(n){
+if(vizinhosZero.includes(n))return "vizinhos de zero"
+if(tier.includes(n))return "tier"
+if(orpholins.includes(n))return "orpholins"
+return "-"
+}
+
+function oculto(n){
+if(n<10)return "-"
+let a=Math.floor(n/10)
+let b=n%10
+return (a+b)+" / "+Math.abs(b-a)
+}
+
+function analise(){
+
+let peso={}
+let ultimos=history.slice(-12)
+
+ultimos.forEach((n,i)=>{
+
+let idx=wheel.indexOf(n)
+let base=12-i
+
+let v1=wheel[(idx-1+37)%37]
+let v2=wheel[(idx+1)%37]
+let v3=wheel[(idx-2+37)%37]
+let v4=wheel[(idx+2)%37]
+
+peso[v1]=(peso[v1]||0)+base*2
+peso[v2]=(peso[v2]||0)+base*2
+peso[v3]=(peso[v3]||0)+base
+peso[v4]=(peso[v4]||0)+base
+
+})
+
+let ordenado=Object.entries(peso)
+.sort((a,b)=>b[1]-a[1])
+.slice(0,8)
+
+numerosFixos=ordenado.map(x=>parseInt(x[0]))
+pesosFixos=ordenado.map(x=>x[1])
+
+}
+
+function mostrarNumeros(){
+
+let maxPeso=Math.max(...pesosFixos)
+
+let html=""
+
+numerosFixos.forEach((n,i)=>{
+
+let p=Math.round((pesosFixos[i]/maxPeso)*100)
+
+html+=`
+<div class="numero-box">
+${small(n)}
+<div class="percent">${p}%</div>
+</div>
+`
+
+})
+
+document.getElementById("proximos").innerHTML=html
+
+}
+
+function calcularForcas(){
+
+let term={},dz={},col={},zn={}
+
+history.slice(-20).forEach(n=>{
+
+term[n%10]=(term[n%10]||0)+1
+dz[duzia(n)]=(dz[duzia(n)]||0)+1
+col[coluna(n)]=(col[coluna(n)]||0)+1
+zn[zona(n)]=(zn[zona(n)]||0)+1
+
+})
+
+let terminal=Object.entries(term).sort((a,b)=>b[1]-a[1])[0]
+let duz=Object.entries(dz).sort((a,b)=>b[1]-a[1])[0]
+let colu=Object.entries(col).sort((a,b)=>b[1]-a[1])[0]
+let zon=Object.entries(zn).sort((a,b)=>b[1]-a[1])[0]
+
+document.getElementById("terminal").innerText="T"+terminal[0]
+document.getElementById("duzia").innerText=duz[0]
+document.getElementById("coluna").innerText=colu[0]
+document.getElementById("zona").innerText=zon[0]
+
+}
+
+function atualizarPainel(){
+
+if(history.length<15)return
+
+if(contadorRodadas<=0){
+
+analise()
+contadorRodadas=2
+
+}
+
+mostrarNumeros()
+
+document.getElementById("contador").innerText=contadorRodadas
+
+calcularForcas()
+
+}
+
+function vizinhos(n){
+
+let i=wheel.indexOf(n)
+let l=wheel[(i-1+wheel.length)%wheel.length]
+let r=wheel[(i+1)%wheel.length]
+
+return small(l)+small(n)+small(r)
+
+}
+
+function render(){
+
+let html=""
+
+history.slice().reverse().forEach(n=>{
+
+html+=`
+<tr>
+<td>${chip(n)}</td>
+<td>${vizinhos(n)}</td>
+<td>${duzia(n)}</td>
+<td>${coluna(n)}</td>
+<td>${n%2==0?"Par":"Ímpar"}</td>
+<td>${zona(n)}</td>
+<td>${oculto(n)}</td>
+</tr>
+`
+
+})
+
+document.getElementById("tabela").innerHTML=html
+
+}
+
+function add(n){
+
+history.push(n)
+
+if(numerosFixos.includes(n)){
+contadorRodadas=0
+}
+
+contadorRodadas--
+
+render()
+atualizarPainel()
+
+}
+
+function removerUltimo(){
+
+history.pop()
+render()
+atualizarPainel()
+
+}
+
+document.getElementById("numero").addEventListener("keypress",function(e){
+
+if(e.key==="Enter"){
+
+let n=parseInt(this.value)
+
+if(n>=0 && n<=36){
+
+add(n)
+this.value=""
+
+}
+
+}
+
+})
+
+</script>
+
+</div>
+
+<div id="vipBlock">
+<div class="vipBox">
+
+<h1>Adquira o Plano VIP</h1>
+<p>Entre em contato</p>
+
+<a id="whatsappLink"
+href="https://wa.me/5531995289598"
+target="_blank">
+
+31995289598
+
+</a>
+
+</div>
+</div>
+
+
+<script>
+
+const ADMIN_USER="ADMIN"
+const ADMIN_PASS="BLACK0123"
+const TEST_PASS="TESTE01"
+
+let usuariosLiberados =
+JSON.parse(localStorage.getItem("usuariosLiberados")) || []
+
+let usuariosVip =
+JSON.parse(localStorage.getItem("usuariosVip")) || []
+
+function login(){
+
+let u=document.getElementById("user").value
+let p=document.getElementById("pass").value
+
+if(u===ADMIN_USER && p===ADMIN_PASS){
+
+document.getElementById("loginScreen").style.display="none"
+document.getElementById("siteConteudo").style.display="block"
+document.getElementById("adminPanel").style.display="block"
+
+mostrarUsuarios()
+mostrarVip()
+
+return
+}
+
+if(usuariosVip.includes(u)){
+abrirSistemaVitalicio()
+return
+}
+
+if(p===TEST_PASS){
+
+let usuario = usuariosLiberados.find(x => x.user === u)
+
+if(!usuario){
+document.getElementById("erro").innerText="Usuário não liberado"
+return
+}
+
+let exp = Date.now() + usuario.tempo
+
+localStorage.setItem("exp", exp)
+
+abrirSistema()
+
+}else{
+
+document.getElementById("erro").innerText="Login inválido"
+
+}
+
+}
+
+function abrirSistema(){
+document.getElementById("loginScreen").style.display="none"
+document.getElementById("siteConteudo").style.display="block"
+startTimer()
+}
+
+function abrirSistemaVitalicio(){
+document.getElementById("loginScreen").style.display="none"
+document.getElementById("siteConteudo").style.display="block"
+document.getElementById("timerBar").innerText="ACESSO VITALÍCIO"
+}
+
+function startTimer(){
+
+let exp = localStorage.getItem("exp")
+if(!exp) return
+
+function tick(){
+
+let rest = exp - Date.now()
+
+if(rest <= 0){
+
+localStorage.clear()
+document.getElementById("siteConteudo").style.display="none"
+document.getElementById("vipBlock").style.display="flex"
+return
+}
+
+let h=Math.floor(rest/3600000)
+let m=Math.floor((rest%3600000)/60000)
+let s=Math.floor((rest%60000)/1000)
+
+h=String(h).padStart(2,"0")
+m=String(m).padStart(2,"0")
+s=String(s).padStart(2,"0")
+
+document.getElementById("timer").innerText=`${h}:${m}:${s}`
+
+}
+
+setInterval(tick,1000)
+
+}
+
+function toggleAdmin(){
+document.getElementById("adminPanel").classList.toggle("open")
+}
+
+async function liberarUsuario(){
+
+let usuario = document.getElementById("novoUsuario").value
+let senha = "TESTE01"
+
+await criarUsuario(usuario,senha)
+
+mostrarUsuarios()
+
+}
+
+function mostrarUsuarios(){
+
+let html=""
+
+usuariosLiberados.forEach((u,i)=>{
+
+html+=`
+<li>
+${u.user}
+<button onclick="removerUsuario(${i})">X</button>
+</li>
+`
+
+})
+
+document.getElementById("listaUsuarios").innerHTML=html
+
+}
+
+function removerUsuario(i){
+
+usuariosLiberados.splice(i,1)
+localStorage.setItem("usuariosLiberados",JSON.stringify(usuariosLiberados))
+mostrarUsuarios()
+
+}
+
+function liberarVip(){
+
+let u=document.getElementById("usuarioVip").value
+
+usuariosVip.push(u)
+
+localStorage.setItem("usuariosVip",JSON.stringify(usuariosVip))
+
+mostrarVip()
+
+}
+
+function mostrarVip(){
+
+let html=""
+
+usuariosVip.forEach((u,i)=>{
+
+html+=`
+<li>
+${u} - VITALÍCIO
+<button onclick="removerVip(${i})">X</button>
+</li>
+`
+
+})
+
+document.getElementById("listaVip").innerHTML=html
+
+}
+
+function removerVip(i){
+
+usuariosVip.splice(i,1)
+localStorage.setItem("usuariosVip",JSON.stringify(usuariosVip))
+mostrarVip()
+
+}
+
+</script>
+
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyDf9O1Rvl6zO1k0C32GJ_QK2dHQ1fLdato",
+authDomain: "black01-login.firebaseapp.com",
+projectId: "black01-login",
+storageBucket: "black01-login.firebasestorage.app",
+messagingSenderId: "505513741875",
+appId: "1:505513741875:web:2d13213d18d6fe05569d46"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.criarUsuario = async function(usuario,senha){
+
+await setDoc(doc(db,"usuarios",usuario),{
+senha:senha,
+dispositivo:"",
+tipo:"normal"
+});
+
+alert("Usuário criado no Firebase");
+
+}
+
+</script>
+
+</body>
+</html>
